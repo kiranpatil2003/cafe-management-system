@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brewora – Artisan Cafe Management System</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+  
+  <!-- Google Fonts: Playfair Display & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.1 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Chart.js 4.4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-warm">
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-container">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="logo-icon-wrapper">
+            <i class="fa-solid fa-mug-hot"></i>
+            <span class="steam-bubble steam-1"></span>
+            <span class="steam-bubble steam-2"></span>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-name">Brewora</h1>
+            <span class="brand-tagline">Artisan Roastery & Cafe</span>
+          </div>
+        </div>
+        <button class="mobile-close-btn" id="mobileCloseBtn" title="Close Menu">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Live Cafe Status Pill -->
+      <div class="sidebar-status-pill">
+        <span class="status-dot pulse"></span>
+        <div class="status-info">
+          <span class="cafe-open-status">Cafe is Open</span>
+          <small class="dine-in-count" id="sidebarActiveTablesCount">12/14 Tables Occupied</small>
+        </div>
+      </div>
+
+      <!-- Sidebar Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MAIN OPERATIONS</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link active" data-page="dashboard">
+              <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
+              <span class="nav-label">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#menu" class="nav-link" data-page="menu">
+              <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
+              <span class="nav-label">Menu Management</span>
+              <span class="nav-badge" id="menuCountBadge">16</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#orders" class="nav-link" data-page="orders">
+              <span class="nav-icon"><i class="fa-solid fa-receipt"></i></span>
+              <span class="nav-label">Orders</span>
+              <span class="nav-badge alert-badge" id="ordersPendingBadge">8</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#tables" class="nav-link" data-page="tables">
+              <span class="nav-icon"><i class="fa-solid fa-chair"></i></span>
+              <span class="nav-label">Tables</span>
+              <span class="nav-badge subtle-badge" id="tablesOccupiedBadge">12</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">MANAGEMENT & DATA</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#inventory" class="nav-link" data-page="inventory">
+              <span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+              <span class="nav-label">Inventory</span>
+              <span class="nav-badge warning-badge" id="lowStockBadge">4 Low</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#customers" class="nav-link" data-page="customers">
+              <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+              <span class="nav-label">Customers</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link" data-page="reports">
+              <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+              <span class="nav-label">Sales & Reports</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#settings" class="nav-link" data-page="settings">
+              <span class="nav-icon"><i class="fa-solid fa-sliders"></i></span>
+              <span class="nav-label">Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Quick POS Trigger -->
+      <div class="sidebar-quick-action">
+        <button class="btn btn-primary btn-block" id="sidebarNewOrderBtn">
+          <i class="fa-solid fa-plus"></i>
+          <span>New POS Order</span>
+        </button>
+      </div>
+
+      <!-- Sidebar User Profile Footer -->
+      <div class="sidebar-profile">
+        <div class="profile-avatar">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Admin Avatar" id="sidebarUserAvatar">
+          <span class="user-online-indicator"></span>
+        </div>
+        <div class="profile-details">
+          <h4 class="profile-name" id="sidebarUserName">Aria Sen</h4>
+          <span class="profile-role" id="sidebarUserRole">Head Barista & Admin</span>
+        </div>
+        <button class="profile-logout-btn" id="logoutBtn" title="Log Out / Lock Register">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <div class="main-wrapper">
+
+      <!-- ==================== TOP NAVIGATION BAR ==================== -->
+      <header class="top-navbar">
+        <div class="top-nav-left">
+          <button class="mobile-toggle-btn" id="mobileToggleBtn" aria-label="Toggle Navigation">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+          <div class="page-header-title">
+            <h2 class="current-page-title" id="topPageTitle">Dashboard</h2>
+            <div class="breadcrumb" id="topBreadcrumb">
+              <span>Brewora</span>
+              <i class="fa-solid fa-chevron-right breadcrumb-separator"></i>
+              <span class="active-crumb" id="breadcrumbActive">Dashboard Home</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Search Bar -->
+        <div class="top-nav-center">
+          <div class="global-search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search menu, orders, tables, customers... (Ctrl + K)" autocomplete="off">
+            <kbd class="search-kbd">⌘K</kbd>
+            <div class="search-quick-results" id="searchQuickResults"></div>
+          </div>
+        </div>
+
+        <!-- Top Right Actions -->
+        <div class="top-nav-right">
+          <!-- Real-Time Date & Clock -->
+          <div class="top-clock-widget">
+            <i class="fa-regular fa-calendar-check clock-icon"></i>
+            <div class="clock-details">
+              <span class="current-date" id="liveDate">Mon, 23 Nov 2026</span>
+              <span class="current-time" id="liveTime">06:21:00 PM</span>
+            </div>
+          </div>
+
+          <!-- Quick "+ New Order" Button -->
+          <button class="btn btn-caramel btn-sm quick-order-nav-btn" id="topNavNewOrderBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span class="hide-mobile">New Order</span>
+          </button>
+
+          <!-- Notifications Bell Dropdown -->
+          <div class="notification-dropdown-wrapper">
+            <button class="icon-btn notification-bell-btn" id="notificationBtn" aria-label="Notifications">
+              <i class="fa-regular fa-bell"></i>
+              <span class="notification-badge" id="notificationBadge">3</span>
+            </button>
+            <div class="notifications-panel" id="notificationsPanel">
+              <div class="notifications-header">
+                <div>
+                  <h4 class="notifications-title">Cafe Alerts</h4>
+                  <span class="unread-subtext" id="notificationsUnreadText">3 unread notifications</span>
+                </div>
+                <button class="text-link mark-read-link" id="markAllNotificationsRead">Mark all read</button>
+              </div>
+              <ul class="notifications-list" id="notificationsList">
+                <!-- Injected via JS -->
+              </ul>
+              <div class="notifications-footer">
+                <a href="#orders" class="view-all-alerts-link" onclick="Brewora.navigateTo('orders')">View All Active Orders</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Profile Quick Pill -->
+          <div class="admin-profile-pill" id="adminProfilePill">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Admin Avatar" class="nav-avatar">
+            <div class="admin-text hide-mobile">
+              <span class="admin-name" id="topAdminName">Aria Sen</span>
+              <span class="admin-status-tag">Manager</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==================== CONTENT PAGES CONTAINER ==================== -->
+      <main class="page-content" id="pageContent">
+
+        <!-- ==================== 1. DASHBOARD PAGE ==================== -->
+        <section class="page-view active" id="page-dashboard">
+          
+          <!-- Welcome Hero Banner -->
+          <div class="dashboard-hero-banner">
+            <div class="hero-content">
+              <div class="hero-badge"><i class="fa-solid fa-crown"></i> Barista Manager Hub</div>
+              <h2 class="hero-title">Welcome to Brewora, <span id="heroUserName">Aria</span>! ☕</h2>
+              <p class="hero-description">The aroma of fresh Arabica fills the cafe. Today’s service is running smoothly with steady customer footfall.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary" onclick="Brewora.openNewOrderModal()">
+                  <i class="fa-solid fa-plus"></i> Create Quick Order
+                </button>
+                <button class="btn btn-secondary" onclick="Brewora.navigateTo('tables')">
+                  <i class="fa-solid fa-table-cells-large"></i> View Floor Plan
+                </button>
+              </div>
+            </div>
+            <div class="hero-decorative-coffee">
+              <div class="floating-coffee-cup">
+                <i class="fa-solid fa-mug-saucer"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Key Stat Cards -->
+          <div class="stats-grid">
+            <!-- Card 1: Today's Revenue -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Today's Revenue</span>
+                <div class="stat-icon-wrapper revenue-icon">
+                  <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="statTodayRevenue">₹12,840</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +14.2%
+                </span>
+                <span class="stat-subtext">vs. yesterday (₹11,240)</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill" style="width: 78%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 2: Total Orders -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Total Orders</span>
+                <div class="stat-icon-wrapper orders-icon">
+                  <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalOrders">86</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +8.5%
+                </span>
+                <span class="stat-subtext">68 completed, 18 active</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill fill-caramel" style="width: 86%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 3: Active Tables -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Active Tables</span>
+                <div class="stat-icon-wrapper tables-icon">
+                  <i class="fa-solid fa-chair"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="statActiveTables">12 <span class="stat-sub-val">/ 14</span></div>
+              <div class="stat-card-footer">
+                <span class="stat-trend warning">
+                  <i class="fa-solid fa-fire"></i> 85.7%
+                </span>
+                <span class="stat-subtext">High rush hour seating</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill fill-sage" style="width: 85.7%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 4: Pending Orders -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Pending Orders</span>
+                <div class="stat-icon-wrapper pending-icon">
+                  <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="statPendingOrders">8</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend alert">
+                  <i class="fa-solid fa-bell"></i> 5 in Kitchen
+                </span>
+                <span class="stat-subtext">Avg prep time: 9.2 mins</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill fill-red" style="width: 48%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analytics & Visuals Row -->
+          <div class="dashboard-analytics-row">
+            <!-- Sales Chart Card -->
+            <div class="card analytics-chart-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Weekly Sales Analytics</h3>
+                  <p class="card-subtitle">Revenue trend & order volumes over the last 7 days</p>
+                </div>
+                <div class="card-header-actions">
+                  <div class="button-group-toggle" id="salesChartToggle">
+                    <button class="toggle-btn active" data-chart-metric="both">Combined</button>
+                    <button class="toggle-btn" data-chart-metric="revenue">Revenue</button>
+                    <button class="toggle-btn" data-chart-metric="orders">Orders</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body chart-body">
+                <div class="chart-canvas-container">
+                  <canvas id="weeklySalesChart"></canvas>
+                </div>
+              </div>
+              <div class="card-footer chart-legend-footer">
+                <div class="legend-item"><span class="legend-dot caramel-dot"></span> Revenue (₹)</div>
+                <div class="legend-item"><span class="legend-dot espresso-dot"></span> Order Volume</div>
+                <div class="legend-item"><span class="legend-dot sage-dot"></span> Target Goal</div>
+              </div>
+            </div>
+
+            <!-- Low Stock Alert Card -->
+            <div class="card low-stock-card">
+              <div class="card-header">
+                <div class="card-header-with-badge">
+                  <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-alert"></i> Low Stock Alerts</h3>
+                  <span class="badge badge-warning" id="dashboardLowStockCount">4 Items</span>
+                </div>
+                <button class="btn btn-sm btn-ghost" onclick="Brewora.navigateTo('inventory')">
+                  Manage <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="low-stock-list" id="dashboardLowStockList">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+              <div class="card-footer bg-subtle">
+                <button class="btn btn-sm btn-secondary btn-block" onclick="Brewora.openRestockModal()">
+                  <i class="fa-solid fa-truck-ramp-box"></i> Quick Restock All Low Items
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Popular Items & Recent Orders Grid -->
+          <div class="dashboard-bottom-grid">
+            
+            <!-- Popular Items Section -->
+            <div class="card popular-items-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Popular Items Today</h3>
+                  <p class="card-subtitle">Top customer favorites ranked by order velocity</p>
+                </div>
+                <button class="btn btn-sm btn-ghost" onclick="Brewora.navigateTo('menu')">
+                  Full Menu <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="popular-items-list" id="dashboardPopularItemsList">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Orders Section -->
+            <div class="card recent-orders-card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Recent Orders</h3>
+                  <p class="card-subtitle">Real-time cafe orders and live prep statuses</p>
+                </div>
+                <div class="card-header-actions">
+                  <button class="btn btn-sm btn-primary" onclick="Brewora.openNewOrderModal()">
+                    <i class="fa-solid fa-plus"></i> New Order
+                  </button>
+                  <button class="btn btn-sm btn-ghost" onclick="Brewora.navigateTo('orders')">
+                    View All <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-0 table-responsive">
+                <table class="data-table" id="dashboardRecentOrdersTable">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Items</th>
+                      <th>Amount</th>
+                      <th>Time</th>
+                      <th>Status</th>
+                      <th class="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardRecentOrdersTbody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ==================== 2. MENU MANAGEMENT PAGE ==================== -->
+        <section class="page-view" id="page-menu">
+          
+          <!-- Menu Header Banner -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Menu Management</h2>
+              <p class="view-subtitle">Organize coffee blends, artisanal beverages, bakery delights, and savory snacks</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-primary" id="addNewMenuItemBtn" onclick="Brewora.openMenuItemModal()">
+                <i class="fa-solid fa-plus"></i> Add New Item
+              </button>
+            </div>
+          </div>
+
+          <!-- Menu Filter & Search Bar -->
+          <div class="filter-toolbar card">
+            <div class="filter-categories-pills" id="menuCategoryPills">
+              <button class="category-pill active" data-category="all">
+                <i class="fa-solid fa-border-all"></i> All Items (<span id="catCountAll">16</span>)
+              </button>
+              <button class="category-pill" data-category="Coffee">
+                <i class="fa-solid fa-mug-hot"></i> Coffee (<span id="catCountCoffee">5</span>)
+              </button>
+              <button class="category-pill" data-category="Tea">
+                <i class="fa-solid fa-leaf"></i> Tea (<span id="catCountTea">3</span>)
+              </button>
+              <button class="category-pill" data-category="Cold Drinks">
+                <i class="fa-solid fa-glass-water"></i> Cold Drinks (<span id="catCountCold">3</span>)
+              </button>
+              <button class="category-pill" data-category="Snacks">
+                <i class="fa-solid fa-burger"></i> Snacks (<span id="catCountSnacks">3</span>)
+              </button>
+              <button class="category-pill" data-category="Desserts">
+                <i class="fa-solid fa-cake-candles"></i> Desserts (<span id="catCountDesserts">2</span>)
+              </button>
+            </div>
+
+            <div class="filter-secondary-row">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="menuSearchInput" placeholder="Search menu by name, ingredient, price...">
+              </div>
+              <div class="filter-controls-group">
+                <select id="menuDietaryFilter" class="form-select">
+                  <option value="all">All Diets (Veg & Non-Veg)</option>
+                  <option value="veg">Vegetarian Only 🌱</option>
+                  <option value="non-veg">Non-Vegetarian 🍗</option>
+                </select>
+                <select id="menuAvailabilityFilter" class="form-select">
+                  <option value="all">All Availability</option>
+                  <option value="available">In Stock Only</option>
+                  <option value="unavailable">Sold Out Only</option>
+                </select>
+                <div class="view-switch-btns">
+                  <button class="view-switch-btn active" id="menuGridViewBtn" title="Grid View">
+                    <i class="fa-solid fa-grip"></i>
+                  </button>
+                  <button class="view-switch-btn" id="menuListViewBtn" title="List View">
+                    <i class="fa-solid fa-list"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu Items Display Grid -->
+          <div class="menu-items-grid" id="menuItemsGrid">
+            <!-- Injected via JS -->
+          </div>
+
+          <!-- Empty State (Hidden by default) -->
+          <div class="empty-state-card hidden" id="menuEmptyState">
+            <div class="empty-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+            <h3>No menu items found</h3>
+            <p>Try clearing your filters or search keywords, or add a brand new handcrafted item.</p>
+            <button class="btn btn-primary" onclick="Brewora.openMenuItemModal()">Add Item Now</button>
+          </div>
+
+        </section>
+
+        <!-- ==================== 3. ORDERS MANAGEMENT PAGE ==================== -->
+        <section class="page-view" id="page-orders">
+          
+          <!-- Orders Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Orders Management</h2>
+              <p class="view-subtitle">Track, prepare, deliver and settle live cafe orders in real time</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-secondary" onclick="Brewora.refreshOrders()">
+                <i class="fa-solid fa-rotate"></i> Refresh
+              </button>
+              <button class="btn btn-primary" onclick="Brewora.openNewOrderModal()">
+                <i class="fa-solid fa-plus"></i> Create New Order
+              </button>
+            </div>
+          </div>
+
+          <!-- Order Status Quick Summary Counters -->
+          <div class="order-status-counters-grid">
+            <div class="status-counter-card active" data-order-status="all">
+              <div class="counter-number" id="orderCountAll">14</div>
+              <div class="counter-label">All Orders</div>
+            </div>
+            <div class="status-counter-card" data-order-status="pending">
+              <div class="counter-number text-warning" id="orderCountPending">3</div>
+              <div class="counter-label">Pending</div>
+            </div>
+            <div class="status-counter-card" data-order-status="preparing">
+              <div class="counter-number text-orange" id="orderCountPreparing">5</div>
+              <div class="counter-label">Preparing</div>
+            </div>
+            <div class="status-counter-card" data-order-status="ready">
+              <div class="counter-number text-blue" id="orderCountReady">2</div>
+              <div class="counter-label">Ready to Serve</div>
+            </div>
+            <div class="status-counter-card" data-order-status="completed">
+              <div class="counter-number text-success" id="orderCountCompleted">3</div>
+              <div class="counter-label">Completed</div>
+            </div>
+            <div class="status-counter-card" data-order-status="cancelled">
+              <div class="counter-number text-alert" id="orderCountCancelled">1</div>
+              <div class="counter-label">Cancelled</div>
+            </div>
+          </div>
+
+          <!-- Orders Filters Bar -->
+          <div class="filter-toolbar card">
+            <div class="orders-filter-row">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="orderSearchInput" placeholder="Search by Order #, Customer Name, or Table...">
+              </div>
+              <div class="filter-controls-group">
+                <select id="orderTypeFilter" class="form-select">
+                  <option value="all">All Types (Dine-in & Takeaway)</option>
+                  <option value="dine-in">Dine-In Only</option>
+                  <option value="takeaway">Takeaway Only</option>
+                </select>
+                <select id="orderPaymentFilter" class="form-select">
+                  <option value="all">All Payment Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid / Open</option>
+                </select>
+                <select id="orderSortFilter" class="form-select">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="amount-high">Amount: High to Low</option>
+                  <option value="amount-low">Amount: Low to High</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders Table Card -->
+          <div class="card p-0">
+            <div class="table-responsive">
+              <table class="data-table orders-table" id="ordersMasterTable">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Table / Type</th>
+                    <th>Items Ordered</th>
+                    <th>Total (₹)</th>
+                    <th>Date & Time</th>
+                    <th>Payment</th>
+                    <th>Order Status</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersMasterTbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div class="empty-state-card hidden" id="ordersEmptyState">
+              <div class="empty-icon"><i class="fa-solid fa-receipt"></i></div>
+              <h3>No matching orders found</h3>
+              <p>Adjust your search filters or create a new order for dining guests.</p>
+              <button class="btn btn-primary" onclick="Brewora.openNewOrderModal()">Create Order</button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== 4. TABLE MANAGEMENT PAGE ==================== -->
+        <section class="page-view" id="page-tables">
+          
+          <!-- Tables Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Table & Seating Management</h2>
+              <p class="view-subtitle">Interactive floor plan, occupancy monitoring, and table reservation console</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-secondary" onclick="Brewora.openReserveTableModal()">
+                <i class="fa-solid fa-calendar-plus"></i> Reserve Table
+              </button>
+              <button class="btn btn-primary" onclick="Brewora.openNewOrderModal()">
+                <i class="fa-solid fa-chair"></i> Seat & Order
+              </button>
+            </div>
+          </div>
+
+          <!-- Floor Statistics Bar -->
+          <div class="table-floor-stats-grid">
+            <div class="floor-stat-pill">
+              <span class="stat-number" id="floorTotalTables">14</span>
+              <span class="stat-desc">Total Tables</span>
+            </div>
+            <div class="floor-stat-pill pill-available">
+              <span class="status-indicator-dot available"></span>
+              <span class="stat-number" id="floorAvailableTables">6</span>
+              <span class="stat-desc">Available</span>
+            </div>
+            <div class="floor-stat-pill pill-occupied">
+              <span class="status-indicator-dot occupied"></span>
+              <span class="stat-number" id="floorOccupiedTables">5</span>
+              <span class="stat-desc">Occupied</span>
+            </div>
+            <div class="floor-stat-pill pill-reserved">
+              <span class="status-indicator-dot reserved"></span>
+              <span class="stat-number" id="floorReservedTables">3</span>
+              <span class="stat-desc">Reserved</span>
+            </div>
+            <div class="floor-stat-pill">
+              <span class="stat-number" id="floorOccupancyRate">57%</span>
+              <span class="stat-desc">Occupancy Rate</span>
+            </div>
+          </div>
+
+          <!-- Floor Zones Tabs & Filters -->
+          <div class="filter-toolbar card">
+            <div class="table-zones-tabs" id="tableZoneTabs">
+              <button class="zone-tab-btn active" data-zone="all">All Zones (14)</button>
+              <button class="zone-tab-btn" data-zone="Indoor Lounge">Indoor Lounge (5)</button>
+              <button class="zone-tab-btn" data-zone="Window Bar">Window Bar (3)</button>
+              <button class="zone-tab-btn" data-zone="Garden Patio">Garden Patio (4)</button>
+              <button class="zone-tab-btn" data-zone="Mezzanine VIP">Mezzanine VIP (2)</button>
+            </div>
+            <div class="table-status-filter-pills">
+              <button class="filter-chip active" data-table-status="all">All Statuses</button>
+              <button class="filter-chip" data-table-status="available"><i class="fa-solid fa-circle text-success"></i> Available</button>
+              <button class="filter-chip" data-table-status="occupied"><i class="fa-solid fa-circle text-alert"></i> Occupied</button>
+              <button class="filter-chip" data-table-status="reserved"><i class="fa-solid fa-circle text-warning"></i> Reserved</button>
+            </div>
+          </div>
+
+          <!-- Floor Plan Layout Grid -->
+          <div class="tables-floor-grid" id="tablesFloorGrid">
+            <!-- Injected via JS -->
+          </div>
+
+        </section>
+
+        <!-- ==================== 5. INVENTORY MANAGEMENT PAGE ==================== -->
+        <section class="page-view" id="page-inventory">
+          
+          <!-- Inventory Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Inventory & Stock Tracking</h2>
+              <p class="view-subtitle">Raw coffee beans, dairy, syrups, bakery supplies, packaging and real-time alerts</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-secondary" onclick="Brewora.exportInventoryCSV()">
+                <i class="fa-solid fa-file-export"></i> Export CSV
+              </button>
+              <button class="btn btn-primary" onclick="Brewora.openRestockModal()">
+                <i class="fa-solid fa-plus"></i> Add / Adjust Stock
+              </button>
+            </div>
+          </div>
+
+          <!-- Inventory KPI Cards -->
+          <div class="stats-grid inventory-kpis">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Total Ingredients</span>
+                <i class="fa-solid fa-boxes-stacked text-caramel"></i>
+              </div>
+              <div class="stat-value" id="invTotalCount">12</div>
+              <span class="stat-subtext">Across 5 cafe categories</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Healthy Stock</span>
+                <i class="fa-solid fa-circle-check text-success"></i>
+              </div>
+              <div class="stat-value text-success" id="invHealthyCount">7</div>
+              <span class="stat-subtext">Above minimum buffer</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Low Stock Warning</span>
+                <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+              </div>
+              <div class="stat-value text-warning" id="invLowStockCount">4</div>
+              <span class="stat-subtext">Needs reordering soon</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Out of Stock</span>
+                <i class="fa-solid fa-circle-xmark text-alert"></i>
+              </div>
+              <div class="stat-value text-alert" id="invOutCount">1</div>
+              <span class="stat-subtext">Unavailable for preparation</span>
+            </div>
+          </div>
+
+          <!-- Low Stock Urgent Callout Banner -->
+          <div class="stock-warning-banner" id="stockWarningBanner">
+            <div class="warning-banner-icon"><i class="fa-solid fa-bell"></i></div>
+            <div class="warning-banner-text">
+              <strong>Supply Alert:</strong> 4 ingredients have reached critical minimum thresholds (Coffee Beans, Fresh Milk, Sugar, Ganache). Prompt restocking recommended before evening service peak.
+            </div>
+            <button class="btn btn-sm btn-caramel" onclick="Brewora.quickRestockAll()">
+              Quick Restock All
+            </button>
+          </div>
+
+          <!-- Inventory Filter Toolbar -->
+          <div class="filter-toolbar card">
+            <div class="orders-filter-row">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="inventorySearchInput" placeholder="Search ingredient, category, or supplier...">
+              </div>
+              <div class="filter-controls-group">
+                <select id="inventoryCategoryFilter" class="form-select">
+                  <option value="all">All Categories</option>
+                  <option value="Coffee & Beans">Coffee & Beans</option>
+                  <option value="Dairy & Milk">Dairy & Milk</option>
+                  <option value="Syrups & Flavor">Syrups & Flavor</option>
+                  <option value="Kitchen & Bakery">Kitchen & Bakery</option>
+                  <option value="Packaging">Packaging</option>
+                </select>
+                <select id="inventoryStatusFilter" class="form-select">
+                  <option value="all">All Stock Statuses</option>
+                  <option value="In Stock">In Stock</option>
+                  <option value="Low Stock">Low Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventory Master Table -->
+          <div class="card p-0">
+            <div class="table-responsive">
+              <table class="data-table inventory-table" id="inventoryMasterTable">
+                <thead>
+                  <tr>
+                    <th>Ingredient / Supply</th>
+                    <th>Category</th>
+                    <th>Available Quantity</th>
+                    <th>Min Buffer</th>
+                    <th>Stock Level Bar</th>
+                    <th>Status</th>
+                    <th class="text-right">Quick Stock Action</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryMasterTbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== 6. CUSTOMERS PAGE ==================== -->
+        <section class="page-view" id="page-customers">
+          
+          <!-- Customers Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Customer Relationship Management</h2>
+              <p class="view-subtitle">Patron profiles, loyalty tiers, dining frequency, and lifetime spend analytics</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-primary" onclick="Brewora.openCustomerModal()">
+                <i class="fa-solid fa-user-plus"></i> Add New Customer
+              </button>
+            </div>
+          </div>
+
+          <!-- Customer CRM KPI Cards -->
+          <div class="stats-grid customer-kpis">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Registered Patrons</span>
+                <i class="fa-solid fa-users text-caramel"></i>
+              </div>
+              <div class="stat-value" id="custTotalCount">124</div>
+              <span class="stat-subtext">+18 new this month</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">VIP Gold Members</span>
+                <i class="fa-solid fa-award text-warning"></i>
+              </div>
+              <div class="stat-value text-warning" id="custVipCount">28</div>
+              <span class="stat-subtext">Tier 3 loyalty coffee club</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Avg Customer Spend</span>
+                <i class="fa-solid fa-wallet text-sage"></i>
+              </div>
+              <div class="stat-value" id="custAvgSpend">₹1,480</div>
+              <span class="stat-subtext">Avg lifetime ticket value</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Repeat Rate</span>
+                <i class="fa-solid fa-repeat text-espresso"></i>
+              </div>
+              <div class="stat-value" id="custRepeatRate">73.5%</div>
+              <span class="stat-subtext">Patrons visiting &gt; 3 times</span>
+            </div>
+          </div>
+
+          <!-- Customer Filter Toolbar -->
+          <div class="filter-toolbar card">
+            <div class="orders-filter-row">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="customerSearchInput" placeholder="Search customer by name, mobile number, email...">
+              </div>
+              <div class="filter-controls-group">
+                <select id="customerTierFilter" class="form-select">
+                  <option value="all">All Loyalty Tiers</option>
+                  <option value="VIP Gold">VIP Gold 👑</option>
+                  <option value="Silver Regular">Silver Regular ⭐</option>
+                  <option value="Bronze Member">Bronze Member ☕</option>
+                </select>
+                <select id="customerSortFilter" class="form-select">
+                  <option value="spend-high">Highest Spend</option>
+                  <option value="orders-high">Most Orders</option>
+                  <option value="recent">Recently Visited</option>
+                  <option value="name-az">Name (A-Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Table -->
+          <div class="card p-0">
+            <div class="table-responsive">
+              <table class="data-table customers-table" id="customersMasterTable">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Contact Phone</th>
+                    <th>Email</th>
+                    <th>Loyalty Tier</th>
+                    <th>Total Orders</th>
+                    <th>Total Spent (₹)</th>
+                    <th>Last Visit</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="customersMasterTbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== 7. SALES & REPORTS PAGE ==================== -->
+        <section class="page-view" id="page-reports">
+          
+          <!-- Reports Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Sales & Financial Analytics</h2>
+              <p class="view-subtitle">Deep insights into revenue streams, beverage categories, and peak dining hours</p>
+            </div>
+            <div class="view-header-actions">
+              <div class="button-group-toggle" id="reportsTimeframeToggle">
+                <button class="toggle-btn" data-timeframe="today">Today</button>
+                <button class="toggle-btn active" data-timeframe="week">This Week</button>
+                <button class="toggle-btn" data-timeframe="month">This Month</button>
+                <button class="toggle-btn" data-timeframe="year">This Year</button>
+              </div>
+              <button class="btn btn-secondary" onclick="Brewora.exportSalesCSV()">
+                <i class="fa-solid fa-download"></i> Export Report
+              </button>
+            </div>
+          </div>
+
+          <!-- Executive Financial Metrics -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Total Gross Revenue</span>
+                <i class="fa-solid fa-indian-rupee-sign text-caramel"></i>
+              </div>
+              <div class="stat-value" id="reportRevenueValue">₹94,620</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +18.4%</span>
+                <span class="stat-subtext">vs previous period</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Total Completed Orders</span>
+                <i class="fa-solid fa-receipt text-espresso"></i>
+              </div>
+              <div class="stat-value" id="reportOrdersValue">564</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +11.2%</span>
+                <span class="stat-subtext">Avg 80 orders / day</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Average Order Value (AOV)</span>
+                <i class="fa-solid fa-scale-balanced text-sage"></i>
+              </div>
+              <div class="stat-value" id="reportAovValue">₹368</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +₹24</span>
+                <span class="stat-subtext">Driven by combo pairings</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Estimated Net Margin</span>
+                <i class="fa-solid fa-percent text-success"></i>
+              </div>
+              <div class="stat-value text-success" id="reportMarginValue">68.2%</div>
+              <div class="stat-card-footer">
+                <span class="stat-trend positive"><i class="fa-solid fa-arrow-up"></i> High</span>
+                <span class="stat-subtext">Beverage gross margin</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Report Charts Grid -->
+          <div class="reports-charts-grid">
+            <!-- Line & Bar Chart: Revenue Over Time -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title" id="revenueTrendChartTitle">Revenue & Order Volume Trend</h3>
+                  <p class="card-subtitle">Daily breakdown of cafe earnings and customer tickets</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-canvas-container" style="height: 320px;">
+                  <canvas id="reportsTrendChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Doughnut Chart: Sales by Category -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Sales by Category</h3>
+                  <p class="card-subtitle">Contribution of beverage & food lines</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-canvas-container" style="height: 320px;">
+                  <canvas id="reportsCategoryChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Reports Row -->
+          <div class="reports-secondary-grid">
+            <!-- Peak Dining Hours Chart -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Hourly Traffic & Rush Hours</h3>
+                  <p class="card-subtitle">Footfall distribution throughout the cafe operational hours</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-canvas-container" style="height: 260px;">
+                  <canvas id="reportsHourlyChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Best-Selling Products Leaderboard -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Top 5 Best-Selling Products</h3>
+                  <p class="card-subtitle">Items driving the highest turnover and revenue</p>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="leaderboard-list" id="reportsLeaderboardList">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== 8. SETTINGS PAGE ==================== -->
+        <section class="page-view" id="page-settings">
+          
+          <!-- Settings Header -->
+          <div class="view-header-banner">
+            <div>
+              <h2 class="view-title">Cafe Settings & Configuration</h2>
+              <p class="view-subtitle">Manage store information, operating hours, tax rules, receipts, and user profile</p>
+            </div>
+            <div class="view-header-actions">
+              <button class="btn btn-secondary" onclick="Brewora.resetDemoData()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset Demo Data
+              </button>
+              <button class="btn btn-primary" onclick="Brewora.saveAllSettings()">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+              </button>
+            </div>
+          </div>
+
+          <!-- Settings Layout Grid -->
+          <div class="settings-layout-grid">
+            
+            <!-- Left Navigation Tabs -->
+            <div class="card settings-tabs-card p-0">
+              <ul class="settings-nav-tabs">
+                <li class="settings-tab active" data-settings-tab="general">
+                  <i class="fa-solid fa-store"></i> Cafe Information
+                </li>
+                <li class="settings-tab" data-settings-tab="hours">
+                  <i class="fa-regular fa-clock"></i> Opening Hours
+                </li>
+                <li class="settings-tab" data-settings-tab="billing">
+                  <i class="fa-solid fa-receipt"></i> Billing & Taxes
+                </li>
+                <li class="settings-tab" data-settings-tab="appearance">
+                  <i class="fa-solid fa-palette"></i> Theme & Appearance
+                </li>
+                <li class="settings-tab" data-settings-tab="profile">
+                  <i class="fa-solid fa-user-gear"></i> Admin Profile
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right Settings Content Panels -->
+            <div class="card settings-content-card">
+              
+              <!-- Tab 1: General Cafe Information -->
+              <div class="settings-panel active" id="settings-panel-general">
+                <h3 class="settings-section-title">General Cafe Information</h3>
+                <p class="settings-section-desc">Details shown on official guest receipts, table QR codes, and digital invoices</p>
+                
+                <form id="generalSettingsForm" onsubmit="event.preventDefault(); Brewora.saveAllSettings();">
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingCafeName">Cafe Name</label>
+                      <input type="text" id="settingCafeName" class="form-control" value="Brewora – Artisan Cafe & Roastery">
+                    </div>
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingTagline">Tagline / Motto</label>
+                      <input type="text" id="settingTagline" class="form-control" value="Specialty Coffee, Fresh Brews & Confectionery">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingContactPhone">Contact Phone</label>
+                      <input type="text" id="settingContactPhone" class="form-control" value="+91 98765 43210">
+                    </div>
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingContactEmail">Contact Email</label>
+                      <input type="email" id="settingContactEmail" class="form-control" value="hello@brewora.cafe">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="settingAddress">Physical Address</label>
+                    <textarea id="settingAddress" class="form-control" rows="2">42 Heritage Promenade, 12th Main, Indiranagar, Bengaluru, Karnataka 560038</textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingGstin">GSTIN / Tax Registration No.</label>
+                      <input type="text" id="settingGstin" class="form-control" value="29AABCU9603R1ZM">
+                    </div>
+                    <div class="form-group col-6">
+                      <label class="form-label" for="settingFssai">FSSAI Food License No.</label>
+                      <input type="text" id="settingFssai" class="form-control" value="11223334000189">
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Tab 2: Opening Hours -->
+              <div class="settings-panel" id="settings-panel-hours">
+                <h3 class="settings-section-title">Operating & Service Hours</h3>
+                <p class="settings-section-desc">Set cafe opening times for weekdays, weekends and special brew sessions</p>
+
+                <div class="operating-hours-table">
+                  <div class="hours-row">
+                    <span class="day-label">Monday – Thursday</span>
+                    <div class="hours-inputs">
+                      <input type="time" class="form-control" value="07:30" id="hoursMonThuOpen">
+                      <span>to</span>
+                      <input type="time" class="form-control" value="22:30" id="hoursMonThuClose">
+                    </div>
+                    <span class="status-badge-inline open">Open</span>
+                  </div>
+                  <div class="hours-row">
+                    <span class="day-label">Friday – Saturday (Late Night Brews)</span>
+                    <div class="hours-inputs">
+                      <input type="time" class="form-control" value="07:30" id="hoursFriSatOpen">
+                      <span>to</span>
+                      <input type="time" class="form-control" value="23:45" id="hoursFriSatClose">
+                    </div>
+                    <span class="status-badge-inline open">Open</span>
+                  </div>
+                  <div class="hours-row">
+                    <span class="day-label">Sunday (Brunch & Roasts)</span>
+                    <div class="hours-inputs">
+                      <input type="time" class="form-control" value="08:00" id="hoursSunOpen">
+                      <span>to</span>
+                      <input type="time" class="form-control" value="22:00" id="hoursSunClose">
+                    </div>
+                    <span class="status-badge-inline open">Open</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Billing & Taxes -->
+              <div class="settings-panel" id="settings-panel-billing">
+                <h3 class="settings-section-title">Billing, Currency & Taxes</h3>
+                <p class="settings-section-desc">Manage regional currency symbol, VAT/GST percentage, and receipt printing defaults</p>
+
+                <div class="form-row">
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingCurrencySymbol">Currency Symbol</label>
+                    <select id="settingCurrencySymbol" class="form-select">
+                      <option value="₹" selected>₹ – Indian Rupee (INR)</option>
+                      <option value="$">$ – US Dollar (USD)</option>
+                      <option value="€">€ – Euro (EUR)</option>
+                      <option value="£">£ – British Pound (GBP)</option>
+                      <option value="AED">AED – UAE Dirham</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingTaxRate">GST / Sales Tax Rate (%)</label>
+                    <input type="number" id="settingTaxRate" class="form-control" value="5" min="0" max="30" step="0.5">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingServiceCharge">Dine-in Service Charge (%)</label>
+                    <input type="number" id="settingServiceCharge" class="form-control" value="0" min="0" max="15">
+                  </div>
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingReceiptFooter">Receipt Footer Message</label>
+                    <input type="text" id="settingReceiptFooter" class="form-control" value="Thank you for visiting Brewora! Come back for fresh roasts.">
+                  </div>
+                </div>
+
+                <div class="form-checkbox-group">
+                  <label class="checkbox-container">
+                    <input type="checkbox" id="settingAutoPrintReceipt" checked>
+                    <span class="checkmark"></span>
+                    <span>Automatically trigger receipt print dialog when order is completed</span>
+                  </label>
+                  <label class="checkbox-container">
+                    <input type="checkbox" id="settingPlaySound" checked>
+                    <span class="checkmark"></span>
+                    <span>Play subtle coffee chime when new order arrives</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Tab 4: Theme & Appearance -->
+              <div class="settings-panel" id="settings-panel-appearance">
+                <h3 class="settings-section-title">Theme & Appearance</h3>
+                <p class="settings-section-desc">Customize UI accent color, dashboard density and visual styling</p>
+
+                <div class="theme-palette-picker">
+                  <div class="theme-choice-card active" data-theme-choice="warm">
+                    <div class="theme-preview-chips">
+                      <span style="background: #3B2416;"></span>
+                      <span style="background: #C08A55;"></span>
+                      <span style="background: #FAF5EF;"></span>
+                    </div>
+                    <div class="theme-choice-name">Artisan Roast (Default)</div>
+                    <div class="theme-choice-desc">Espresso brown, rich caramel & warm cream</div>
+                  </div>
+                  <div class="theme-choice-card" data-theme-choice="sage">
+                    <div class="theme-preview-chips">
+                      <span style="background: #2D3E2F;"></span>
+                      <span style="background: #8A9A80;"></span>
+                      <span style="background: #F4F7F4;"></span>
+                    </div>
+                    <div class="theme-choice-name">Matcha Sage</div>
+                    <div class="theme-choice-desc">Botanical greens, earthy tones & herbal vibe</div>
+                  </div>
+                  <div class="theme-choice-card" data-theme-choice="dark">
+                    <div class="theme-preview-chips">
+                      <span style="background: #1C1510;"></span>
+                      <span style="background: #C08A55;"></span>
+                      <span style="background: #2A1D15;"></span>
+                    </div>
+                    <div class="theme-choice-name">Midnight Espresso</div>
+                    <div class="theme-choice-desc">Dark mode for sleek evening cafe lighting</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 5: Admin Profile -->
+              <div class="settings-panel" id="settings-panel-profile">
+                <h3 class="settings-section-title">Manager & Staff Profile</h3>
+                <p class="settings-section-desc">Update manager name, duty shift role, and profile picture</p>
+
+                <div class="profile-edit-header">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Admin" class="profile-big-avatar" id="settingProfilePreviewImg">
+                  <div>
+                    <h4 id="settingProfileNameHeading">Aria Sen</h4>
+                    <span class="badge badge-caramel" id="settingProfileRoleHeading">Head Barista & Admin</span>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingUserName">Full Name</label>
+                    <input type="text" id="settingUserName" class="form-control" value="Aria Sen">
+                  </div>
+                  <div class="form-group col-6">
+                    <label class="form-label" for="settingUserRole">Role Title</label>
+                    <input type="text" id="settingUserRole" class="form-control" value="Head Barista & Admin">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="settingUserAvatarUrl">Avatar Image URL</label>
+                  <input type="text" id="settingUserAvatarUrl" class="form-control" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80">
+                </div>
+              </div>
+
+              <!-- Settings Save Action Footer -->
+              <div class="settings-footer-actions">
+                <button type="button" class="btn btn-secondary" onclick="Brewora.resetDemoData()">Reset to Demo Defaults</button>
+                <button type="button" class="btn btn-primary" onclick="Brewora.saveAllSettings()">
+                  <i class="fa-solid fa-check"></i> Save & Apply Settings
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Add / Edit Menu Item Modal -->
+  <div class="modal-backdrop" id="menuItemModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-mug-hot modal-icon"></i>
+          <h3 class="modal-title" id="menuModalTitle">Add New Menu Item</h3>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('menuItemModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="menuItemForm" onsubmit="Brewora.handleSaveMenuItem(event)">
+        <div class="modal-body">
+          <input type="hidden" id="menuItemEditId" value="">
+          
+          <div class="form-row">
+            <div class="form-group col-8">
+              <label class="form-label" for="menuInputName">Item Name *</label>
+              <input type="text" id="menuInputName" class="form-control" placeholder="e.g. Spanish Iced Latte" required>
+            </div>
+            <div class="form-group col-4">
+              <label class="form-label" for="menuInputPrice">Price (₹) *</label>
+              <input type="number" id="menuInputPrice" class="form-control" placeholder="260" min="10" step="5" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="menuInputCategory">Category *</label>
+              <select id="menuInputCategory" class="form-select" required>
+                <option value="Coffee">Coffee</option>
+                <option value="Tea">Tea</option>
+                <option value="Cold Drinks">Cold Drinks</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Desserts">Desserts</option>
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="menuInputDiet">Dietary Classification</label>
+              <select id="menuInputDiet" class="form-select">
+                <option value="veg">Vegetarian (🌱 Veg)</option>
+                <option value="non-veg">Non-Vegetarian (🍗 Non-Veg)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="menuInputDesc">Description</label>
+            <textarea id="menuInputDesc" class="form-control" rows="2" placeholder="Rich espresso paired with condensed milk and whole milk over crystal ice..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="menuInputImage">Item Image URL</label>
+            <div class="input-with-button">
+              <input type="url" id="menuInputImage" class="form-control" placeholder="https://images.unsplash.com/photo-...">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="Brewora.pickRandomImage()">Suggest Image</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="checkbox-container">
+                <input type="checkbox" id="menuInputAvailable" checked>
+                <span class="checkmark"></span>
+                <span>Item Available for Ordering</span>
+              </label>
+            </div>
+            <div class="form-group col-6">
+              <label class="checkbox-container">
+                <input type="checkbox" id="menuInputPopular">
+                <span class="checkmark"></span>
+                <span>Mark as Chef's Popular Pick 🔥</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Image Preview -->
+          <div class="modal-image-preview-wrapper" id="menuImagePreviewWrapper">
+            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=600&q=80" alt="Preview" id="menuImagePreview">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('menuItemModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="menuModalSaveBtn">
+            <i class="fa-solid fa-check"></i> Save Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Create New POS Order Modal -->
+  <div class="modal-backdrop" id="newOrderModal">
+    <div class="modal-box modal-xl">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-cash-register modal-icon"></i>
+          <div>
+            <h3 class="modal-title">Create POS Order</h3>
+            <span class="modal-subtitle">Pick items, select table, and dispatch to barista kitchen</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('newOrderModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body pos-modal-body">
+        
+        <!-- Left: Menu Picker -->
+        <div class="pos-menu-column">
+          <div class="pos-search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="posMenuSearch" placeholder="Search item to add..." oninput="Brewora.filterPosMenu(this.value)">
+          </div>
+          <div class="pos-category-tags" id="posCategoryTags">
+            <button class="pos-tag-btn active" onclick="Brewora.filterPosCategory('all')">All</button>
+            <button class="pos-tag-btn" onclick="Brewora.filterPosCategory('Coffee')">Coffee</button>
+            <button class="pos-tag-btn" onclick="Brewora.filterPosCategory('Tea')">Tea</button>
+            <button class="pos-tag-btn" onclick="Brewora.filterPosCategory('Cold Drinks')">Cold</button>
+            <button class="pos-tag-btn" onclick="Brewora.filterPosCategory('Snacks')">Snacks</button>
+            <button class="pos-tag-btn" onclick="Brewora.filterPosCategory('Desserts')">Desserts</button>
+          </div>
+          <div class="pos-menu-cards-grid" id="posMenuGrid">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Right: Order Ticket Cart -->
+        <div class="pos-cart-column">
+          <div class="pos-cart-header">
+            <h4>Current Order Cart</h4>
+            <button class="text-link text-alert" onclick="Brewora.clearPosCart()">Clear All</button>
+          </div>
+
+          <!-- Customer & Dining info -->
+          <div class="pos-order-meta">
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label class="form-label" for="posOrderType">Dining Mode</label>
+                <select id="posOrderType" class="form-select" onchange="Brewora.handlePosTypeChange(this.value)">
+                  <option value="Dine-In">Dine-In Table</option>
+                  <option value="Takeaway">Takeaway Parcel</option>
+                </select>
+              </div>
+              <div class="form-group col-6" id="posTableSelectGroup">
+                <label class="form-label" for="posTableSelect">Assign Table</label>
+                <select id="posTableSelect" class="form-select">
+                  <!-- Injected via JS -->
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label class="form-label" for="posCustomerName">Customer Name</label>
+                <input type="text" id="posCustomerName" class="form-control" placeholder="e.g. Rohan Sharma" value="Guest Patron">
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="posCustomerPhone">Mobile / Phone</label>
+                <input type="tel" id="posCustomerPhone" class="form-control" placeholder="98765 00000">
+              </div>
+            </div>
+          </div>
+
+          <!-- Cart Items List -->
+          <div class="pos-cart-items-list" id="posCartItemsList">
+            <div class="empty-cart-message">
+              <i class="fa-solid fa-basket-shopping"></i>
+              <p>No items in cart yet. Click any menu item on the left to add!</p>
+            </div>
+          </div>
+
+          <!-- Calculation Totals -->
+          <div class="pos-cart-calculation">
+            <div class="calc-row">
+              <span>Subtotal:</span>
+              <span id="posCalcSubtotal">₹0.00</span>
+            </div>
+            <div class="calc-row">
+              <span>GST Tax (5%):</span>
+              <span id="posCalcTax">₹0.00</span>
+            </div>
+            <div class="calc-row calc-total">
+              <span>Grand Total:</span>
+              <span id="posCalcTotal">₹0.00</span>
+            </div>
+          </div>
+
+          <!-- Payment Method Selector -->
+          <div class="pos-payment-selector">
+            <label class="form-label">Payment Method</label>
+            <div class="payment-method-options">
+              <label class="payment-opt active">
+                <input type="radio" name="posPayment" value="UPI" checked>
+                <span><i class="fa-solid fa-qrcode"></i> UPI</span>
+              </label>
+              <label class="payment-opt">
+                <input type="radio" name="posPayment" value="Card">
+                <span><i class="fa-solid fa-credit-card"></i> Card</span>
+              </label>
+              <label class="payment-opt">
+                <input type="radio" name="posPayment" value="Cash">
+                <span><i class="fa-solid fa-money-bill-wave"></i> Cash</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- POS Action Submit Button -->
+          <div class="pos-cart-submit">
+            <button class="btn btn-primary btn-block btn-lg" id="posSubmitOrderBtn" onclick="Brewora.submitPosOrder()">
+              <i class="fa-solid fa-check"></i> Place & Confirm Order
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Order Details & Receipt Modal -->
+  <div class="modal-backdrop" id="orderDetailsModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-receipt modal-icon"></i>
+          <div>
+            <h3 class="modal-title" id="receiptModalOrderTitle">Order #BRW-1086</h3>
+            <span class="modal-subtitle" id="receiptModalDateTime">23 Nov 2026, 05:42 PM</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('orderDetailsModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Printable Receipt Box -->
+        <div class="printable-receipt" id="printableReceipt">
+          <div class="receipt-header-center">
+            <h2 class="receipt-cafe-name">Brewora</h2>
+            <p class="receipt-cafe-sub">Artisan Roastery & Specialty Cafe</p>
+            <p class="receipt-address">42 Heritage Promenade, Indiranagar, Bengaluru</p>
+            <p class="receipt-tax-id">GSTIN: 29AABCU9603R1ZM</p>
+            <div class="receipt-divider">--------------------------------</div>
+          </div>
+
+          <div class="receipt-meta-grid">
+            <div><strong>Order ID:</strong> <span id="recOrderId">#BRW-1086</span></div>
+            <div><strong>Date:</strong> <span id="recDate">23 Nov 2026</span></div>
+            <div><strong>Customer:</strong> <span id="recCustomer">Ananya Roy</span></div>
+            <div><strong>Table / Type:</strong> <span id="recTable">Table 02 (Dine-In)</span></div>
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <table class="receipt-items-table">
+            <thead>
+              <tr>
+                <th class="text-left">Item</th>
+                <th class="text-center">Qty</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="recItemsTbody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <div class="receipt-totals-box">
+            <div class="receipt-row">
+              <span>Subtotal:</span>
+              <span id="recSubtotal">₹0.00</span>
+            </div>
+            <div class="receipt-row">
+              <span>GST (5%):</span>
+              <span id="recTax">₹0.00</span>
+            </div>
+            <div class="receipt-row receipt-grand-total">
+              <strong>TOTAL PAYABLE:</strong>
+              <strong id="recTotal">₹0.00</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Payment Mode:</span>
+              <span id="recPayment">UPI (Paid)</span>
+            </div>
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+          <div class="receipt-footer-center">
+            <p class="receipt-thankyou">Thank you for dining with Brewora! ☕</p>
+            <p class="receipt-barcode">||||||||||||||||||||||||||||||||||||||||</p>
+          </div>
+        </div>
+
+        <!-- Status Controller -->
+        <div class="order-status-change-box">
+          <label class="form-label">Update Order Preparation Status:</label>
+          <div class="status-action-pills">
+            <button class="status-pill-btn btn-warning" onclick="Brewora.setOrderStatusFromModal('pending')">Pending</button>
+            <button class="status-pill-btn btn-orange" onclick="Brewora.setOrderStatusFromModal('preparing')">Preparing</button>
+            <button class="status-pill-btn btn-blue" onclick="Brewora.setOrderStatusFromModal('ready')">Ready</button>
+            <button class="status-pill-btn btn-success" onclick="Brewora.setOrderStatusFromModal('completed')">Completed</button>
+            <button class="status-pill-btn btn-danger" onclick="Brewora.setOrderStatusFromModal('cancelled')">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('orderDetailsModal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="Brewora.printCurrentReceipt()">
+          <i class="fa-solid fa-print"></i> Print Bill / Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Table Reservation Modal -->
+  <div class="modal-backdrop" id="reserveTableModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-calendar-check modal-icon"></i>
+          <h3 class="modal-title">Reserve Cafe Table</h3>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('reserveTableModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="reserveTableForm" onsubmit="Brewora.handleSaveReservation(event)">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="resSelectTable">Select Table *</label>
+              <select id="resSelectTable" class="form-select" required>
+                <!-- Populated via JS -->
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="resPartySize">Number of Guests</label>
+              <input type="number" id="resPartySize" class="form-control" value="2" min="1" max="10" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="resGuestName">Guest Full Name *</label>
+              <input type="text" id="resGuestName" class="form-control" placeholder="e.g. Vikram Malhotra" required>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="resGuestPhone">Contact Phone *</label>
+              <input type="tel" id="resGuestPhone" class="form-control" placeholder="+91 98765 12345" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="resReservationTime">Reservation Time *</label>
+              <input type="time" id="resReservationTime" class="form-control" value="19:30" required>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="resSpecialNotes">Special Requests</label>
+              <input type="text" id="resSpecialNotes" class="form-control" placeholder="Window view, anniversary...">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('reserveTableModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Confirm Reservation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Restock / Inventory Modal -->
+  <div class="modal-backdrop" id="restockModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-boxes-packing modal-icon"></i>
+          <h3 class="modal-title" id="restockModalTitle">Add / Restock Inventory</h3>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('restockModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="restockForm" onsubmit="Brewora.handleSaveInventory(event)">
+        <div class="modal-body">
+          <input type="hidden" id="inventoryEditId" value="">
+          
+          <div class="form-group">
+            <label class="form-label" for="invInputName">Ingredient / Item Name *</label>
+            <input type="text" id="invInputName" class="form-control" placeholder="e.g. Arabica Coffee Beans" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="invInputCategory">Category *</label>
+              <select id="invInputCategory" class="form-select" required>
+                <option value="Coffee & Beans">Coffee & Beans</option>
+                <option value="Dairy & Milk">Dairy & Milk</option>
+                <option value="Syrups & Flavor">Syrups & Flavor</option>
+                <option value="Kitchen & Bakery">Kitchen & Bakery</option>
+                <option value="Packaging">Packaging</option>
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="invInputUnit">Measurement Unit *</label>
+              <select id="invInputUnit" class="form-select" required>
+                <option value="kg">kg (Kilograms)</option>
+                <option value="L">L (Liters)</option>
+                <option value="pcs">pcs (Pieces)</option>
+                <option value="loaves">loaves (Loaves)</option>
+                <option value="boxes">boxes (Boxes)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="invInputQty">Current Available Qty *</label>
+              <input type="number" id="invInputQty" class="form-control" placeholder="10.0" min="0" step="0.1" required>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="invInputMin">Minimum Buffer Level *</label>
+              <input type="number" id="invInputMin" class="form-control" placeholder="5.0" min="0" step="0.1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="invInputSupplier">Preferred Supplier / Roaster</label>
+            <input type="text" id="invInputSupplier" class="form-control" placeholder="e.g. Blue Mountain Estate, Chikmagalur">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('restockModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Update Stock
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Add / Edit Customer Modal -->
+  <div class="modal-backdrop" id="customerModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-user-plus modal-icon"></i>
+          <h3 class="modal-title" id="customerModalTitle">Add Customer Profile</h3>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('customerModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="customerForm" onsubmit="Brewora.handleSaveCustomer(event)">
+        <div class="modal-body">
+          <input type="hidden" id="customerEditId" value="">
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="custInputName">Full Name *</label>
+              <input type="text" id="custInputName" class="form-control" placeholder="e.g. Sneha Patel" required>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="custInputPhone">Phone Number *</label>
+              <input type="tel" id="custInputPhone" class="form-control" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="custInputEmail">Email Address</label>
+              <input type="email" id="custInputEmail" class="form-control" placeholder="patron@gmail.com">
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="custInputTier">Loyalty Tier</label>
+              <select id="custInputTier" class="form-select">
+                <option value="Bronze Member">Bronze Member ☕</option>
+                <option value="Silver Regular">Silver Regular ⭐</option>
+                <option value="VIP Gold">VIP Gold 👑</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="custInputFavorite">Favorite Coffee / Snack</label>
+            <input type="text" id="custInputFavorite" class="form-control" placeholder="e.g. Classic Cappuccino & Almond Croissant">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('customerModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Customer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. Customer Profile & History Modal -->
+  <div class="modal-backdrop" id="customerHistoryModal">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-id-card modal-icon"></i>
+          <div>
+            <h3 class="modal-title" id="custHistName">Customer Profile</h3>
+            <span class="modal-subtitle" id="custHistTier">VIP Gold Member</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('customerHistoryModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="customer-profile-card">
+          <div class="cust-card-avatar" id="custHistAvatar">AS</div>
+          <div class="cust-card-info">
+            <h4 id="custHistFullName">Ananya Roy</h4>
+            <p id="custHistPhone">+91 98765 11223</p>
+            <p id="custHistEmail">ananya.roy@example.com</p>
+            <span class="badge badge-caramel" id="custHistFavoriteBadge">Fav: Classic Cappuccino</span>
+          </div>
+        </div>
+
+        <div class="customer-stats-mini-row">
+          <div class="mini-stat">
+            <span class="mini-val" id="custHistTotalOrders">18</span>
+            <span class="mini-lbl">Total Orders</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-val" id="custHistTotalSpent">₹4,620</span>
+            <span class="mini-lbl">Total Spent</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-val" id="custHistPoints">462</span>
+            <span class="mini-lbl">Brew Points</span>
+          </div>
+        </div>
+
+        <h4 class="mt-4 mb-2 font-medium">Recent Order Visits</h4>
+        <div class="customer-history-list" id="custHistOrdersList">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('customerHistoryModal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="Brewora.openNewOrderForCustomer()">
+          <i class="fa-solid fa-mug-hot"></i> Start New Order for Guest
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Reusable Confirmation Modal -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-triangle-exclamation modal-icon text-alert"></i>
+          <h3 class="modal-title" id="confirmModalTitle">Confirm Action</h3>
+        </div>
+        <button class="modal-close-btn" onclick="Brewora.closeModal('confirmModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmModalMessage">Are you sure you want to proceed with this operation? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="Brewora.closeModal('confirmModal')">Cancel</button>
+        <button type="button" class="btn btn-alert" id="confirmModalActionBtn">Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATIONS CONTAINER ==================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App Script -->
+  <script src="script.js"></script>
+</body>
+</html>
